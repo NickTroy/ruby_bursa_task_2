@@ -2,11 +2,6 @@ require 'active_support/all'
 require 'pry'
 
 require './library_manager.rb'
-require './author.rb'
-require './book.rb'
-require './published_book.rb'
-require './reader.rb'
-require './reader_with_book.rb'
 
 describe LibraryManager do
 
@@ -17,25 +12,34 @@ describe LibraryManager do
   let(:manager) { LibraryManager.new(ivan_testenko, (DateTime.now.new_offset(0) - 2.days)) }
 
   it 'should count penalty' do
-    manager.penalty
+    expect(manager.penalty).to eq 780
   end
 
   it 'should know if author can meet another author' do
-    manager.could_meet_each_other? leo_tolstoy, oscar_wilde
+    expect(manager.could_meet_each_other? leo_tolstoy, oscar_wilde).to eq true
   end  
 
   it 'should count days to buy' do
-    manager.days_to_buy
+    expect(manager.days_to_buy).to eq 4
   end
 
   it 'should transliterate ukrainian names' do
-    ukrainan_author = Author.new(1856, 1916, 'Іван Франко')
-    manager.transliterate ukrainan_author
+    ukrainian_author = Author.new(1856, 1916, 'Іван Франко')
+    expect(manager.transliterate ukrainian_author).to eq "Ivan Franko"
   end
 
   it 'should count penalty to finish' do
-    manager.penalty_to_finish
+    expect(manager.penalty_to_finish).to eq 3784
   end
 
-  
+  it 'should compose email notification' do
+    expect(manager.email_notification).to eq <<-TEXT
+  Hello, some code!
+
+  You should return a book authored by smth in some hours
+  Otherwise you will pay $
+  TEXT
+
+  end
+    
 end
